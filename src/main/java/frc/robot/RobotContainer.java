@@ -6,159 +6,86 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.PWMPorts;
-import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.Constants.PWMPorts;
 
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {   
 
-    /* Controllers */
+/* Controllers */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-    private final Joystick driver = new Joystick(0);//xbox controller
-    private final Joystick Thrustmaster = new Joystick(1);
-    //private final Joystick driver2 = new Joystick(1);
-    
-
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-    
-    private final JoystickButton Abutton = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton Bbutton = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton Xbutton = new JoystickButton(driver, XboxController.Button.kX.value);
-    
-
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton button8 = new JoystickButton(Thrustmaster,8);
-    private final JoystickButton button7 = new JoystickButton(Thrustmaster,7);
-    private final JoystickButton button2 = new JoystickButton(Thrustmaster, 2);
-
-    private final JoystickButton button14 = new JoystickButton(Thrustmaster, 14);
-    private final JoystickButton button15 = new JoystickButton(Thrustmaster, 15);
-    private final JoystickButton button16 = new JoystickButton(Thrustmaster, 16);
-    private final JoystickButton rightBummper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton button4 = new JoystickButton(Thrustmaster, 4);
-    private final JoystickButton button3 = new JoystickButton(Thrustmaster, 3);
-
-    private final JoystickButton trigger = new JoystickButton(Thrustmaster, 1);
-    private final JoystickButton backButton = new JoystickButton(driver, XboxController.Button.kBack.value);
-
-
-    private final JoystickButton button9 = new JoystickButton(Thrustmaster,9);
-    private final JoystickButton button6 = new JoystickButton(Thrustmaster,6);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    //Thrust Master Buttons
-    //private final boolean trigger = driver2.getRawButton(1);
-    /* Subsystems */
-   // private final liftSub m_lift = new liftSub();
-    private final armSub m_arm = new armSub();
-    private final liftSub m_lift = new liftSub();
-    private final Swerve s_Swerve = new Swerve();
-    private final intakeSub m_Intake = new intakeSub();
-    private final Flipper Flipper = new Flipper();
-    private final blinkin blinkin = new blinkin();
+    private final Joystick joystick = new Joystick(0);//joystick, this should be registering in port 0 of your driver station
+    private final Joystick xbox = new Joystick(1); //xbox controller, this should be registering in port 1 of your driver station
 
     
-  
+//Controls
 
+//Driving, this is where you declare the axis that your robot will drive off of
+    private final int translationAxis = joystick.getYChannel();
+    private final int strafeAxis = joystick.getXChannel();
+    private final int rotationAxis = joystick.getZChannel();
 
+//Driver Buttons, this is where you declare the diffent buttons and keybinds, and give them the name.//
+    private final JoystickButton button1 = new JoystickButton(joystick, 1);
+    private final JoystickButton button2 = new JoystickButton(joystick, 2);
+    private final JoystickButton button3 = new JoystickButton(joystick, 3);
+    private final JoystickButton button4 = new JoystickButton(joystick, 4);
+    private final JoystickButton button5 = new JoystickButton(joystick, 5);
+    private final JoystickButton button6 = new JoystickButton(joystick, 6);
+    private final JoystickButton button7 = new JoystickButton(joystick, 7);
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+//Operator Buttons, this is where you declare the diffent buttons and keybinds, and give them the name.//
+    private final JoystickButton leftbumper = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+    private final JoystickButton rightbumper = new JoystickButton(xbox, XboxController.Button.kRightBumper.value);
+    private final JoystickButton abutton = new JoystickButton(xbox, XboxController.Button.kA.value);
+    private final JoystickButton xbutton = new JoystickButton(xbox, XboxController.Button.kX.value);
+    private final JoystickButton ybutton = new JoystickButton(xbox, XboxController.Button.kY.value);
+    private final JoystickButton bbutton = new JoystickButton(xbox, XboxController.Button.kB.value);
+
+/* Subsystems, this is where you declare the subsystems you are using on your robot */
+  private final solenoidcontrol m_solenoidcontrol = new armSub();
+
+/*This is where you declare the driving commands for your robot. 
+This says that the x axis will control translation movement, Y will control strafing, and z will change the rotaiton*/
     public RobotContainer() {
+      hdrive.setDefaultCommand(
 
-      
-        s_Swerve.setDefaultCommand(
-            
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> (-driver.getRawAxis(translationAxis)), //*Math.abs(driver.getRawAxis(translationAxis))
-                () -> (-driver.getRawAxis(strafeAxis)), //*Math.abs(driver.getRawAxis(strafeAxis))
-                () -> (-driver.getRawAxis(rotationAxis)), // * Math.abs(driver.getRawAxis(rotationAxis))
-                () -> robotCentric.getAsBoolean()
-            )
-
-        );
-        //autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("NoAuto", new NoAuto(s_Swerve));
-    autoChooser.addOption("ShortAuto", new ShortAuto(s_Swerve));
-    autoChooser.addOption("BalanceAuto", new BalanceAuto(s_Swerve));
-    autoChooser.addOption("LongAuto", new LongAuto(s_Swerve));
-    autoChooser.addOption("VeryShortAuto", new VeryShortAuto(s_Swerve));
-    autoChooser.addOption("DropAuto", new DropAuto(s_Swerve, m_arm, m_lift, m_Intake));
-   // SmartDashboard.putData("Autonomous Chooser", autoChooser);
-    Shuffleboard.getTab("user tab").add(autoChooser);
-    
-     
-
-        // Configure the button bindings
+      new hdrive(
+        joystick.getRawAxis(translationAxis),
+        joystick.getRawAxis(strafeAxis),
+        joystick.getRawAxis(rotationAxis)
+      ));
         configureButtonBindings();
     }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-     */
     private void configureButtonBindings() {
-        
-        /* Driver Buttons */
-        //UP
-        button16.whileTrue(new InstantCommand(() -> m_arm.armUp()));
-        button16.whileTrue(new InstantCommand(() -> m_lift.liftUp()));
-        //MIddle
-        button15.whileTrue(new InstantCommand(() -> m_arm.armMiddle()));
-        button15.whileTrue(new InstantCommand(() -> m_lift.liftMiddle()));
-        //Down
-        button14.whileTrue(new InstantCommand(() -> m_arm.armDown()));
-        button14.whileTrue(new InstantCommand(() -> m_lift.liftDown()));
-        button7.whileTrue(new InstantCommand(() -> m_lift.liftUpManual())).whileFalse(new InstantCommand(() -> m_lift.liftUpManualStop()));
-        button8.whileTrue(new InstantCommand(() -> m_lift.liftDownManual())).whileFalse(new InstantCommand(() -> m_lift.liftDownManualStop()));
-        button6.whileTrue(new InstantCommand(() -> m_arm.armUpManual())).whileFalse(new InstantCommand(() -> m_arm.armUpManualStop()));
-        button9.whileTrue(new InstantCommand(() -> m_arm.armDownManual())).whileFalse(new InstantCommand(() -> m_arm.armDownManualStop()));;
-        button3.whileTrue(new InstantCommand(() -> Flipper.Flipperin())).whileFalse(new InstantCommand(() -> Flipper.FlipperStop()));
-        button4.whileTrue(new InstantCommand(() -> Flipper.Flipperout())).whileFalse(new InstantCommand(() -> Flipper.FlipperStop()));
+        /* Driver Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn */
+       button1.onTrue(new InstantCommand(() -> kCubeGripperOpen()));
+       button2.onTrue(new InstantCommand(() -> kCubeGripperClose()));
+       button3.onTrue(new InstantCommand(() -> kUpperArmExtend()));
+       button4.onTrue(new InstantCommand(() -> kUpperArmRetract()));
+       button5.onTrue(new InstantCommand(() -> kLowerArmExtend()));
+       button6.onTrue(new InstantCommand(() -> kLowerArmRetract()));
+       button7.onTrue(new InstantCommand(() -> /*solenoid command*/()));
 
-
-       // backButton.whileTrue(new InstantCommand(() -> m_arm.armMovement(double setpoint + .025)));
-      //  button8.whileTrue(new InstantCommand(() -> m_lift.liftDown())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
-       // button7.whileTrue(new InstantCommand(() -> m_lift.liftUp())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
-      //  button9.whileTrue(new InstantCommand(() -> m_lift.liftMiddle())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
-        trigger.whileTrue(new InstantCommand(() -> m_Intake.intakein())).whileFalse(new InstantCommand(() -> m_Intake.intakeStop()));
-        button2.whileTrue(new InstantCommand(() -> m_Intake.intakeout())).whileFalse(new InstantCommand(() -> m_Intake.intakeStop()));
-       button3.whileTrue(new InstantCommand(() -> blinkin.givecone())).whileFalse(new InstantCommand(() -> blinkin.lightsNormal()));
-        
-        
-
-
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-
+       /*Operator Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn*/
+       leftbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       rightbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       abutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       xbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       ybutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       bbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
     }
-
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-      return autoChooser.getSelected();
-    }
+      //An ExampleCommand will run in autonomous
+    return autoChooser.getSelected();
+  }
 }
