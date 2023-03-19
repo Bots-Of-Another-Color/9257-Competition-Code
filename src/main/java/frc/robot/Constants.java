@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -78,7 +81,19 @@ public final class Constants {
      * m3      m4
      */
 
-    double i = 2;
+     public static final TalonFX k_front_left_motor     = new TalonFX(0);
+     public static final TalonFX k_back_left_motor      = new TalonFX(1);
+
+     public static final TalonFX k_front_right_motor    = new TalonFX(2);
+     public static final TalonFX k_back_right_motor     = new TalonFX(3);
+    
+     public static final TalonFX k_middle_left_motor    = new TalonFX(4);
+     public static final TalonFX k_middle_right_motor   = new TalonFX(5);
+
+    
+
+
+
 
 
   }

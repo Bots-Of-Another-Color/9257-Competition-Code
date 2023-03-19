@@ -6,13 +6,17 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class HDrive extends SubsystemBase {
   /** Creates a new HDrive. */
-  public HDrive() {}
+  //private final DifferentialDrive d;
+  public HDrive() {
+  }
 
-  public void hDriveControl(DoubleSupplier x, DoubleSupplier y, DoubleSupplier z){
+  public void hDriveControl(double x, double y, double z){
     
   }
 

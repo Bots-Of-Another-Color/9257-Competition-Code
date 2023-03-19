@@ -1,6 +1,7 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -47,37 +48,39 @@ public class RobotContainer {
     private final JoystickButton bbutton = new JoystickButton(xbox, XboxController.Button.kB.value);
 
 /* Subsystems, this is where you declare the subsystems you are using on your robot */
-  private final solenoidcontrol m_solenoidcontrol = new armSub();
+  private final SolenoidControl m_solenoidcontrol = new SolenoidControl();
+  private final HDrive hdrive = new HDrive();
 
 /*This is where you declare the driving commands for your robot. 
 This says that the x axis will control translation movement, Y will control strafing, and z will change the rotaiton*/
     public RobotContainer() {
       hdrive.setDefaultCommand(
 
-      new hdrive(
+      new HDriveControl(
         joystick.getRawAxis(translationAxis),
         joystick.getRawAxis(strafeAxis),
-        joystick.getRawAxis(rotationAxis)
+        joystick.getRawAxis(rotationAxis),
+        hdrive
       ));
         configureButtonBindings();
     }
     private void configureButtonBindings() {
         /* Driver Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn */
-       button1.onTrue(new InstantCommand(() -> kCubeGripperOpen()));
-       button2.onTrue(new InstantCommand(() -> kCubeGripperClose()));
-       button3.onTrue(new InstantCommand(() -> kUpperArmExtend()));
-       button4.onTrue(new InstantCommand(() -> kUpperArmRetract()));
-       button5.onTrue(new InstantCommand(() -> kLowerArmExtend()));
-       button6.onTrue(new InstantCommand(() -> kLowerArmRetract()));
-       button7.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+      // button1.onTrue(new InstantCommand(() -> kCubeGripperOpen()));
+       //button2.onTrue(new InstantCommand(() -> kCubeGripperClose()));
+       //button3.onTrue(new InstantCommand(() -> kUpperArmExtend()));
+       //button4.onTrue(new InstantCommand(() -> kUpperArmRetract()));
+       //button5.onTrue(new InstantCommand(() -> kLowerArmExtend()));
+       //button6.onTrue(new InstantCommand(() -> kLowerArmRetract()));
+       //button7.onTrue(new InstantCommand(() -> /*solenoid command*/()));
 
        /*Operator Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn*/
-       leftbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-       rightbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-       abutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-       xbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-       ybutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-       bbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+      // leftbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       //rightbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       //abutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       //xbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       //ybutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
+       //bbutton.onTrue(new InstantCommand(() -> /*solenoid command*/()));
     }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
