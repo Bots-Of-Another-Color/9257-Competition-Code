@@ -1,63 +1,164 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.PWMPorts;
+import frc.robot.autos.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.Constants.PWMPorts;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+public class RobotContainer {   
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    /* Controllers */
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
-  }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    private final Joystick driver = new Joystick(0);//xbox controller
+    private final Joystick Thrustmaster = new Joystick(1);
+    //private final Joystick driver2 = new Joystick(1);
     
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-  }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    
+    private final JoystickButton Abutton = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton Bbutton = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton Xbutton = new JoystickButton(driver, XboxController.Button.kX.value);
+    
+
+    /* Driver Buttons */
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton button8 = new JoystickButton(Thrustmaster,8);
+    private final JoystickButton button7 = new JoystickButton(Thrustmaster,7);
+    private final JoystickButton button2 = new JoystickButton(Thrustmaster, 2);
+
+    private final JoystickButton button14 = new JoystickButton(Thrustmaster, 14);
+    private final JoystickButton button15 = new JoystickButton(Thrustmaster, 15);
+    private final JoystickButton button16 = new JoystickButton(Thrustmaster, 16);
+    private final JoystickButton rightBummper = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton button4 = new JoystickButton(Thrustmaster, 4);
+    private final JoystickButton button3 = new JoystickButton(Thrustmaster, 3);
+
+    private final JoystickButton trigger = new JoystickButton(Thrustmaster, 1);
+    private final JoystickButton backButton = new JoystickButton(driver, XboxController.Button.kBack.value);
+
+
+    private final JoystickButton button9 = new JoystickButton(Thrustmaster,9);
+    private final JoystickButton button6 = new JoystickButton(Thrustmaster,6);
+    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    //Thrust Master Buttons
+    //private final boolean trigger = driver2.getRawButton(1);
+    /* Subsystems */
+   // private final liftSub m_lift = new liftSub();
+    private final armSub m_arm = new armSub();
+    private final liftSub m_lift = new liftSub();
+    private final Swerve s_Swerve = new Swerve();
+    private final intakeSub m_Intake = new intakeSub();
+    private final Flipper Flipper = new Flipper();
+    private final blinkin blinkin = new blinkin();
+
+    
+  
+
+
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+
+      
+        s_Swerve.setDefaultCommand(
+            
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> (-driver.getRawAxis(translationAxis)), //*Math.abs(driver.getRawAxis(translationAxis))
+                () -> (-driver.getRawAxis(strafeAxis)), //*Math.abs(driver.getRawAxis(strafeAxis))
+                () -> (-driver.getRawAxis(rotationAxis)), // * Math.abs(driver.getRawAxis(rotationAxis))
+                () -> robotCentric.getAsBoolean()
+            )
+
+        );
+        //autoChooser = new SendableChooser<Command>();
+    autoChooser.setDefaultOption("NoAuto", new NoAuto(s_Swerve));
+    autoChooser.addOption("ShortAuto", new ShortAuto(s_Swerve));
+    autoChooser.addOption("BalanceAuto", new BalanceAuto(s_Swerve));
+    autoChooser.addOption("LongAuto", new LongAuto(s_Swerve));
+    autoChooser.addOption("VeryShortAuto", new VeryShortAuto(s_Swerve));
+    autoChooser.addOption("DropAuto", new DropAuto(s_Swerve, m_arm, m_lift, m_Intake));
+   // SmartDashboard.putData("Autonomous Chooser", autoChooser);
+    Shuffleboard.getTab("user tab").add(autoChooser);
+    
+     
+
+        // Configure the button bindings
+        configureButtonBindings();
+    }
+
+    /**
+     * Use this method to define your button->command mappings. Buttons can be created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        
+        /* Driver Buttons */
+        //UP
+        button16.whileTrue(new InstantCommand(() -> m_arm.armUp()));
+        button16.whileTrue(new InstantCommand(() -> m_lift.liftUp()));
+        //MIddle
+        button15.whileTrue(new InstantCommand(() -> m_arm.armMiddle()));
+        button15.whileTrue(new InstantCommand(() -> m_lift.liftMiddle()));
+        //Down
+        button14.whileTrue(new InstantCommand(() -> m_arm.armDown()));
+        button14.whileTrue(new InstantCommand(() -> m_lift.liftDown()));
+        button7.whileTrue(new InstantCommand(() -> m_lift.liftUpManual())).whileFalse(new InstantCommand(() -> m_lift.liftUpManualStop()));
+        button8.whileTrue(new InstantCommand(() -> m_lift.liftDownManual())).whileFalse(new InstantCommand(() -> m_lift.liftDownManualStop()));
+        button6.whileTrue(new InstantCommand(() -> m_arm.armUpManual())).whileFalse(new InstantCommand(() -> m_arm.armUpManualStop()));
+        button9.whileTrue(new InstantCommand(() -> m_arm.armDownManual())).whileFalse(new InstantCommand(() -> m_arm.armDownManualStop()));;
+        button3.whileTrue(new InstantCommand(() -> Flipper.Flipperin())).whileFalse(new InstantCommand(() -> Flipper.FlipperStop()));
+        button4.whileTrue(new InstantCommand(() -> Flipper.Flipperout())).whileFalse(new InstantCommand(() -> Flipper.FlipperStop()));
+
+
+       // backButton.whileTrue(new InstantCommand(() -> m_arm.armMovement(double setpoint + .025)));
+      //  button8.whileTrue(new InstantCommand(() -> m_lift.liftDown())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
+       // button7.whileTrue(new InstantCommand(() -> m_lift.liftUp())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
+      //  button9.whileTrue(new InstantCommand(() -> m_lift.liftMiddle())).whileFalse(new InstantCommand(() -> m_lift.liftStop()));
+        trigger.whileTrue(new InstantCommand(() -> m_Intake.intakein())).whileFalse(new InstantCommand(() -> m_Intake.intakeStop()));
+        button2.whileTrue(new InstantCommand(() -> m_Intake.intakeout())).whileFalse(new InstantCommand(() -> m_Intake.intakeStop()));
+       button3.whileTrue(new InstantCommand(() -> blinkin.givecone())).whileFalse(new InstantCommand(() -> blinkin.lightsNormal()));
+        
+        
+
+
+        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // An ExampleCommand will run in autonomous
+      return autoChooser.getSelected();
+    }
 }
