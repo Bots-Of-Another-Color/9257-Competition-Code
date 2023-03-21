@@ -5,32 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.HDrive;
 
-public class HDriveControl extends CommandBase {
-  private final HDrive h_Drive;
-  private final double m_x;
-  private final double m_y;
-  private final double m_z;
-  private final boolean is_slowed;
-
-  /** Creates a new HDriveControl. */
-  public HDriveControl(double x, double y, double z, HDrive sub, boolean isSlowed) {
-    m_x = x;
-    m_y = y;
-    m_z = z;
-    is_slowed = isSlowed;
-    h_Drive = sub;
-
-    addRequirements(sub);
+public class DriveToObject extends CommandBase {
+  /** Creates a new DriveToObject. */
+  public DriveToObject() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    h_Drive.hDriveControl(m_x, m_y, m_z, is_slowed);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

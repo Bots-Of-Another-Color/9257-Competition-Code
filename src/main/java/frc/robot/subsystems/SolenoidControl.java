@@ -4,39 +4,38 @@
 
 package frc.robot.subsystems;
 
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SolenoidConstants;
 
-enum SolenoidState{
+enum SolenoidState {
   OPEN,
   CLOSE
 }
 
 public class SolenoidControl extends SubsystemBase {
+  private final Compressor com;
+
   /** Creates a new SolenoidControl. */
   public SolenoidControl() {
-
-
-
-
+    com = new Compressor(PneumaticsModuleType.REVPH);
   }
 
-  public void setDefaultStartPos(){
-      Constants.SolenoidConstants.CubeManipulator.set(SolenoidConstants.CubeM_StartState);
-      Constants.SolenoidConstants.kConeManip.set(SolenoidConstants.ConeM_StartState);
-      Constants.SolenoidConstants.Upper10Manip.set(SolenoidConstants.Upper10M_StartState);
-      Constants.SolenoidConstants.UpperHyperExtender.set(SolenoidConstants.UpperHE_StartValue);
-      Constants.SolenoidConstants.kUpperRotator.set(SolenoidConstants.UpperR_StartState);
-      Constants.SolenoidConstants.kLowerArmRotation.set(SolenoidConstants.LAR_StartState);
-      Constants.SolenoidConstants.kLowerManip.set(SolenoidConstants.LM_StartState);
+  public void setDefaultStartPos() {
+    Constants.SolenoidConstants.CubeManipulator.set(SolenoidConstants.CubeM_StartState);
+    Constants.SolenoidConstants.kConeManip.set(SolenoidConstants.ConeM_StartState);
+    Constants.SolenoidConstants.Upper10Manip.set(SolenoidConstants.Upper10M_StartState);
+    Constants.SolenoidConstants.UpperHyperExtender.set(SolenoidConstants.UpperHE_StartValue);
+    Constants.SolenoidConstants.kUpperRotator.set(SolenoidConstants.UpperR_StartState);
+    Constants.SolenoidConstants.kLowerArmRotation.set(SolenoidConstants.LAR_StartState);
+    Constants.SolenoidConstants.kLowerManip.set(SolenoidConstants.LM_StartState);
   }
 
-  public void setSolenoidPos(int solenoid_to_toggle){
-    switch(solenoid_to_toggle){
+  public void setSolenoidPos(int solenoid_to_toggle) {
+    switch (solenoid_to_toggle) {
       case 0: {
         SolenoidConstants.CubeManipulator.toggle();
       }
@@ -62,26 +61,26 @@ public class SolenoidControl extends SubsystemBase {
         SmartDashboard.putString("Default'd Solenoid Pos", "Entered Default Pos");
       }
     }
-    
 
   }
 
-
+  public void initCompressorPressure(){
+    com.enableAnalog(60, 120);
+    com.enableHybrid(0, 0);
+  }
 
   /*
-  1. Gripper Extened
-  2.
-  3.
-  4.
-  5.
-  6.
-  7.
-   */  
-
-
-
+   * 1. Gripper Extened
+   * 2.
+   * 3.
+   * 4.
+   * 5.
+   * 6.
+   * 7.
+   */
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Pressure", com.getPressure());
     // This method will be called once per scheduler run
   }
 }

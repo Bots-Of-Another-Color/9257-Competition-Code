@@ -37,6 +37,11 @@ deploy {
     }
 }
 
+
+repositories {
+    maven { url 'https://nexus.otake.pw/repository/maven-public/' }
+}
+
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
 // Set to true to use debug for JNI.
@@ -68,6 +73,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    implementation 'pw.otake.pseudoresonance:pixy2-java-api:1.4.1'
 }
 
 test {

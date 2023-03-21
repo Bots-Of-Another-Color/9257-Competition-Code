@@ -1,16 +1,10 @@
 package frc.robot;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -60,20 +54,20 @@ This says that the x axis will control translation movement, Y will control stra
         joystick.getRawAxis(translationAxis),
         joystick.getRawAxis(strafeAxis),
         joystick.getRawAxis(rotationAxis),
-        hdrive
+        hdrive,
+        false
       ));
         configureButtonBindings();
     }
     private void configureButtonBindings() {
+      button1.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(0)));
+      button2.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(1)));
+      button3.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(2)));
+      button4.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(3)));
+      button5.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(4)));
+      button6.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(5)));
+      button7.onTrue(new InstantCommand(() -> m_solenoidcontrol.setSolenoidPos(6)));
         /* Driver Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn */
-      // button1.onTrue(new InstantCommand(() -> kCubeGripperOpen()));
-       //button2.onTrue(new InstantCommand(() -> kCubeGripperClose()));
-       //button3.onTrue(new InstantCommand(() -> kUpperArmExtend()));
-       //button4.onTrue(new InstantCommand(() -> kUpperArmRetract()));
-       //button5.onTrue(new InstantCommand(() -> kLowerArmExtend()));
-       //button6.onTrue(new InstantCommand(() -> kLowerArmRetract()));
-       //button7.onTrue(new InstantCommand(() -> /*solenoid command*/()));
-
        /*Operator Buttons to change the binding button, change the left bumper, right bumper, et cetera to a different butotn*/
       // leftbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
        //rightbumper.onTrue(new InstantCommand(() -> /*solenoid command*/()));
